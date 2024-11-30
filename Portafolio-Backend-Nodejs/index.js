@@ -1,5 +1,5 @@
 const express = require('express');
-const { Sequelize } = require('sequelize'); // Usar Sequelize para la conexión a PostgreSQL
+const { Sequelize } = require('sequelize');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const emailRoutes = require('./routes/emailRoutes');
@@ -7,23 +7,19 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
 const proyectoRoutes = require('./routes/proyectosRoutes');
 const hacktheboxRoutes = require('./routes/hacktheboxRoutes');
-const cors = require('cors'); 
+const cors = require('cors');
+const config = require('./config/config.json');
 
 const app = express();
+
+// Habilitar CORS para todas las solicitudes
+app.use(cors());
+
+// Middleware para parsear JSON
 app.use(express.json());
 
 // Configuración de la conexión a PostgreSQL usando Sequelize
-const sequelize = new Sequelize({
-  dialect: 'postgres',
-  host: process.env.PGHOST,
-  username: process.env.PGUSER,
-  password: process.env.PGPASSWORD,
-  database: process.env.PGDATABASE,
-  port: process.env.PGPORT,
-  ssl: {
-    rejectUnauthorized: false, // Asegúrate de agregar esta opción si usas SSL en Railway
-  },
-});
+const sequelize = new Sequelize(config.development); // Usar configuración del archivo config.json
 
 // Sincronizar las tablas con la base de datos (no se usa `force: true` para evitar perder datos)
 sequelize.sync({ force: false }) 
@@ -33,9 +29,6 @@ sequelize.sync({ force: false })
   .catch((error) => {
     console.error('Error al sincronizar las tablas:', error);
   });
-
-// Habilitar CORS para todas las solicitudes
-app.use(cors());
 
 // Configuración de Swagger
 const swaggerOptions = {
@@ -61,16 +54,13 @@ const swaggerSpec = swaggerJSDoc(swaggerOptions);
 // Servir la documentación Swagger en la ruta /api-docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Middleware para parsear JSON
-app.use(bodyParser.json());
-
 // Rutas
 app.use('/api', emailRoutes); // Aquí definimos el prefijo '/api' para todas las rutas de email
 app.use('/api', proyectoRoutes);
 app.use('/api', hacktheboxRoutes);
 
 // Iniciar el servidor
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Usar el puerto desde el archivo .env o 3000 como predeterminado
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
   console.log(`Documentación Swagger disponible en http://localhost:${PORT}/api-docs`);

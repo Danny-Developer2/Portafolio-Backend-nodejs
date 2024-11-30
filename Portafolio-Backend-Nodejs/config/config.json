@@ -1,11 +1,13 @@
 {
-  
-   "development": {
+  "development": {
     "username": "postgres",
     "password": "gNPFiuzzPpwVEOhiybyIUkWMXFtPKQwh",
     "database": "railway",
     "host": "autorack.proxy.rlwy.net",
     "port": 23064,
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "ssl": {
+      "rejectUnauthorized": false
+    }
   }
 }
