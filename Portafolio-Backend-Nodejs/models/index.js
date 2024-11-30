@@ -10,11 +10,14 @@ const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
+
+// Si no usas variables de entorno, simplemente conecta con la configuración del archivo JSON
+sequelize = new Sequelize(config.database, config.username, config.password, {
+  host: config.host,
+  dialect: config.dialect,
+  port: config.port,
+  ssl: config.ssl || false, // Asegúrate de que 'ssl' esté configurado correctamente en tu config.json
+});
 
 fs
   .readdirSync(__dirname)
