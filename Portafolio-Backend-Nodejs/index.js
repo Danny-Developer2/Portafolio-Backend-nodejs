@@ -14,6 +14,7 @@ const app = express();
 app.use(express.json());
 
 
+
 sequelize.sync({ force: false }) // Esto borrará las tablas existentes y las recreará
   .then(() => {
     console.log('Tablas sincronizadas');
