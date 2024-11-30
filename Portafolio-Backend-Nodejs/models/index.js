@@ -9,6 +9,8 @@ const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
+console.log(config);  // Para verificar que la configuración se está cargando correctamente
+
 let sequelize;
 
 // Si no usas variables de entorno, simplemente conecta con la configuración del archivo JSON
@@ -16,8 +18,17 @@ sequelize = new Sequelize(config.database, config.username, config.password, {
   host: config.host,
   dialect: config.dialect,
   port: config.port,
-  ssl: config.ssl || false, // Asegúrate de que 'ssl' esté configurado correctamente en tu config.json
+  ssl: config.ssl ? { rejectUnauthorized: false } : false,  // Asegúrate de que 'ssl' esté configurado correctamente en tu config.json
 });
+
+// Verificar la conexión con la base de datos
+sequelize.authenticate()
+  .then(() => {
+    console.log('Conexión a la base de datos establecida con éxito.');
+  })
+  .catch((err) => {
+    console.error('No se pudo conectar a la base de datos:', err);
+  });
 
 fs
   .readdirSync(__dirname)

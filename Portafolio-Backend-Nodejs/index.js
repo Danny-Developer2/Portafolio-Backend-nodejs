@@ -19,16 +19,7 @@ app.use(cors());
 app.use(express.json());
 
 // Configuración de la conexión a PostgreSQL usando Sequelize
-const sequelize = new Sequelize(config.development); // Usar configuración del archivo config.json
 
-// Sincronizar las tablas con la base de datos (no se usa `force: true` para evitar perder datos)
-sequelize.sync({ force: false }) 
-  .then(() => {
-    console.log('Tablas sincronizadas');
-  })
-  .catch((error) => {
-    console.error('Error al sincronizar las tablas:', error);
-  });
 
 // Configuración de Swagger
 const swaggerOptions = {
