@@ -32,7 +32,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'http://localhost:3000/api', // URL base de la API
+        url: 'portafolio-backend-nodejs-production.up.railway.app/api', // URL base de la API
       },
     ],
   },
