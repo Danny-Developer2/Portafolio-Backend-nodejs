@@ -50,6 +50,27 @@ app.use('/api', emailRoutes); // Aquí definimos el prefijo '/api' para todas la
 app.use('/api', proyectoRoutes);
 app.use('/api', hacktheboxRoutes);
 
+// Simulación de una respuesta 404
+app.get('/api/buggy/not-found', (req, res) => {
+  res.status(404).json({ message: 'El recurso solicitado no existe.' });
+});
+
+// Simulación de una respuesta 500 (error en el servidor)
+app.get('/api/buggy/server-error', (req, res) => {
+  throw new Error('Simulación de un error en el servidor.');
+});
+
+// Simulación de una respuesta 400 (mala solicitud)
+app.get('/api/buggy/bad-request', (req, res) => {
+  res.status(400).json({ message: 'Solicitud incorrecta.' });
+});
+
+// Middleware de manejo de errores para el error 500
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Error interno del servidor.' });
+});
+
 // Iniciar el servidor
 const PORT = process.env.PORT || 3000; // Usar el puerto desde el archivo .env o 3000 como predeterminado
 app.listen(PORT, () => {
